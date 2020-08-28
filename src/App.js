@@ -8,11 +8,6 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import './App.css';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
-
-const app = new Clarifai.App({
-	apiKey: '3cef5a94d13c4154b832c103a90da8ec'
-});
 
 const particlesOptions = {
 	particles: {
@@ -33,24 +28,26 @@ const particlesOptions = {
 	}
 }
 
+const initialState = {
+	input: '', // what you type in the url search box
+	imageURL: '',
+	box: {},
+	route: 'signin',
+	isSignedIn: false,
+	user: {
+		id: '',
+		name: '',
+		email: '',
+		entries: 0,
+		joined: ''
+	}
+}
+
 class App extends Component {
 	
 	constructor() {
 		super();
-		this.state = {
-			input: '',
-			imageURL: '',
-			box: {},
-			route: 'signin',
-			isSignedIn: false,
-			user: {
-				id: '',
-				name: '',
-				email: '',
-				entries: 0,
-				joined: ''
-			}
-		}
+		this.state = initialState;
 	}
 	
 	loadUser = (data) => {
@@ -84,7 +81,7 @@ class App extends Component {
 	
 	onRouteChange = (route) => {
 		if (route === 'signin' || route === 'register') {
-			this.setState({isSignedIn: false})
+			this.setState(initialState)
 		} else if (route === 'home') {
 			this.setState({isSignedIn: true})
 		}
@@ -94,17 +91,22 @@ class App extends Component {
 	displayFaceBox = (box) => {
 		this.setState({box: box});
 	}
-		
+	
 	onInputChange = (event) => {
 		this.setState({input: event.target.value});
 	}
 	
 	onButtonSubmit = () => {
 		this.setState({imageURL: this.state.input});
-		app.models
-			.predict(
-				Clarifai.FACE_DETECT_MODEL,
-				this.state.input)
+		
+		fetch('https://smart-brain-api.run.goorm.io/imageurl', {
+			method: 'post',
+			headers: {'Content-Type': 'application/json'}, // wrap Content-Type in quotes (hyphen)
+			body: JSON.stringify({
+				input: this.state.input
+			})
+		})
+			.then(response => response.json())
 			.then(response => {
 				if (response) {
 					fetch('https://smart-brain-api.run.goorm.io/image', {
@@ -114,9 +116,10 @@ class App extends Component {
 							id: this.state.user.id
 						})
 					})
-	.then(response => response.json())
-					.then(count => this.setState(Object.assign(this.state.user, { entries: count })));
+					.then(response => response.json())
+					.then(count => this.setState(Object.assign(this.state.user, { entries: count })))
 					// // use Object.assign since we only want to modify entries
+					.catch(console.log);
 				}
 				this.displayFaceBox(this.calculateFaceLocation(response));
 			})
