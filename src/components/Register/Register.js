@@ -24,7 +24,7 @@ class Register extends React.Component {
 	}
 	
 	onSubmitRegister = () => {
-		fetch('https://smart-brain-api.run.goorm.io/register', {
+		fetch('https://polar-refuge-06939.herokuapp.com/register', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'}, // wrap Content-Type in quotes due to hyphen
 			body: JSON.stringify({

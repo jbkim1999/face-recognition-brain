@@ -99,7 +99,7 @@ class App extends Component {
 	onButtonSubmit = () => {
 		this.setState({imageURL: this.state.input});
 		
-		fetch('https://smart-brain-api.run.goorm.io/imageurl', {
+		fetch('https://polar-refuge-06939.herokuapp.com/imageurl', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'}, // wrap Content-Type in quotes (hyphen)
 			body: JSON.stringify({
@@ -109,7 +109,7 @@ class App extends Component {
 			.then(response => response.json())
 			.then(response => {
 				if (response) {
-					fetch('https://smart-brain-api.run.goorm.io/image', {
+					fetch('https://polar-refuge-06939.herokuapp.com/image', {
 						method: 'put',
 						headers: {'Content-Type': 'application/json'}, // wrap Content-Type in quotes (hyphen)
 						body: JSON.stringify({
@@ -156,3 +156,9 @@ class App extends Component {
 }
 
 export default App;
+
+// "scripts": {
+    // "start": "serve -s build",
+    // it used to be like this, which you can remove now:
+    // "start": "react-scripts start",
+// This is the recommended way to deploy to production using create react app

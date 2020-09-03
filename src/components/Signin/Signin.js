@@ -19,7 +19,7 @@ class Signin extends React.Component {
 	}
 	
 	onSubmitSignIn = () => {
-		fetch('https://smart-brain-api.run.goorm.io/signin', {
+		fetch('https://polar-refuge-06939.herokuapp.com/signin', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'}, // wrap Content-Type in quotes due to hyphen
 			body: JSON.stringify({
